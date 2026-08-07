@@ -9,10 +9,10 @@ use enable_ansi_support;
 
 fn save(user: &mut User) {
     let mut file = File::create("data.txt");
-    let items = user.items.join(",");
+    let inventory = user.inventory.join(",");
     let event_flags = user.event_flags.join(",");
     let user_flags = user.user_flags.join(",");
-    let info = format!("{}:{}:{}:{}:{}:{}:{}:{}:{}",user.name, items, user.level, user.location, event_flags, user.health, user.exp, user_flags, user.progress);
+    let info = format!("{}:{}:{}:{}:{}:{}:{}:{}:{}",user.name, inventory, user.level, user.location, event_flags, user.health, user.exp, user_flags, user.progress);
     let info = info.as_bytes();
     file.expect("reason").write_all(info);
 }
@@ -22,9 +22,9 @@ fn load() -> User {
         let contents = contents.expect("");
         let contents = contents.trim().split(":");
         let contents = contents.collect::<Vec<&str>>();
-        let items = contents[1];
-        let items = items.split(",");
-        let items: Vec<String> = items.map(|x| x.trim().to_string()).collect();
+        let inventory = contents[1];
+        let inventory = inventory.split(",");
+        let inventory: Vec<String> = inventory.map(|x| x.trim().to_string()).collect();
         let event_flags = contents[4];
         let event_flags = event_flags.split(",");
         let event_flags: Vec<String> = event_flags.map(|x| x.trim().to_string()).collect();
@@ -33,7 +33,7 @@ fn load() -> User {
         let user_flags: Vec<String> = user_flags.map(|x| x.trim().to_string()).collect();
         User {
             name: contents[0].to_string(),
-            items: items,
+            inventory: inventory,
             level: contents[2].parse().expect("failed to read user level."),
             location: contents[3].to_string(),
             event_flags: event_flags,
@@ -86,7 +86,7 @@ fn commands(input: &str, flag: &str) {
             }
             _ =>{
                 clear;
-                println!("[{}] Incorrect input.", "ERROR".red().bold());
+                println!("[{}] Incorrect command usage. type {}, {}, or {}.", "ERROR".red().bold(), "new".green(), "load".green(), "quit".green());
                 print!("[{}]: ", "Command".blue().bold());
                 std::io::stdout().flush().unwrap();
                 let mut input = String::new();
@@ -113,39 +113,86 @@ fn commands(input: &str, flag: &str) {
 
 fn events() {
     let mut user = load();
+    let mut to_progress = false;
     for i in &user.event_flags {
         if i == "start" {
             match user.progress {
                 0 => {
                     println!("BANG!!!");
-                    user.progress += 1;
+                    to_progress = true;
 
                 }
                 1 => {
                     println!("{} wakes up quickly and looks around... After a few moments of confusion, {} remembers that they have the most annoying neighbors living upstairs.", user.name, user.name);
-                    user.progress += 1;
+                    to_progress = true;
 
                 }
                 2 => {
                     println!("{} lays in their lumpy, sagging bed for a few more moments before slowly getting up and getting dressed. \"I need to go to the store to get food today.\" {} mutters under their breath. The moldy cheese sitting on the table was probably not edible, and the mice had not even left crumbs to eat in the pantry. {} picks up the coins on table... [10 {} added to the inventory]", user.name, user.name, user.name, "coins".cyan());
-                    user.progress += 1;
-
+                    inventory_update("coins", 10);
+                    to_progress = true;
                 }
                 _ => {
 
                 }
             }
         }
-        else {
+    }
+    let mut user = load();
+    if to_progress == true {
+        user.progress += 1;
+    } else {
 
+    }
+    save(&mut user);
+
+}
+
+fn inventory_update(item: &str, _amount: i32) {
+    let mut user = load();
+    let mut updated_amount = 0;
+    let mut index = 0;
+    let mut _name = "".to_string();
+    let mut op = true;
+    for i in &user.inventory {
+        let data = i.split("-");
+        let data: Vec<String> = data.map(|x| x.trim().to_string()).collect();
+        if data.len() > 1 {
+            let name = &data[0];
+            let mut amount = data[1].parse().unwrap();
+            if name == item {
+                amount += _amount;
+                let amount = if amount <=0 {
+                    0
+                } else {
+                    amount
+                };
+                index += user.inventory.iter().position(|x| *&x == i).unwrap();
+                updated_amount += amount;
+                _name = name.to_string();
+
+            }
+        } else {
+            op = false;
         }
+
+    }
+    if op == true {
+        if updated_amount == 0 {
+            user.inventory.remove(index);
+        } else {
+            user.inventory.remove(index);
+            user.inventory.push(format!("{}-{}", _name, updated_amount.to_string()));
+        }
+    } else {
+        user.inventory.push(format!("{}-{}", item, _amount.to_string()));
     }
     save(&mut user);
 }
 
 struct User {
     name: String,
-    items: Vec<String>,
+    inventory: Vec<String>,
     level: i32,
     location: String,
     event_flags: Vec<String>,
@@ -159,7 +206,7 @@ impl User {
     fn new(username: &str) -> User {
         User {
             name: username.to_string(),
-            items: vec![],
+            inventory: vec![],
             level: 1,
             location: "home".to_string(),
             event_flags: vec!["start".to_string()],
@@ -170,4 +217,31 @@ impl User {
         }
     }
 }
+
+struct Objects {
+    items: HashMap<String, i32>, // value
+    potions: HashMap<String, (String, i32, i32)>, // (type, value, statamount)
+    weapons: HashMap<String, (i32, i32)>, // (value, damage)
+    scrolls: HashMap<String, (String, i32, i32)>, //(type, value, damage)
+}
+
+impl Objects {
+    fn new() -> Objects {
+        let mut objects = Objects {
+            items: HashMap::new(),
+            potions: HashMap::new(),
+            weapons: HashMap::new(),
+            scrolls: HashMap::new(),
+        };
+
+        objects.items.insert("coins".to_string(), 1);
+        objects.potions.insert("minor health potion".to_string(), ("potion".to_string(), 25, 50));
+        objects.weapons.insert("rusty dagger".to_string(), (10, 15));
+        objects.weapons.insert("rusty sword".to_string(), (30, 20));
+        objects.scrolls.insert("firespark".to_string(), ("fire".to_string(), 50, 50));
+        objects
+    }
+}
+
+
 
