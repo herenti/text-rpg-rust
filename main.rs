@@ -118,17 +118,25 @@ fn events() {
         if i == "start" {
             match user.progress {
                 0 => {
-                    println!("BANG!!!");
+                    println!("[{}] BANG!!!", "Story".blue().bold());
                     to_progress = true;
 
                 }
                 1 => {
-                    println!("{} wakes up quickly and looks around... After a few moments of confusion, {} remembers that they have the most annoying neighbors living upstairs.", user.name, user.name);
+                    println!("[{}] {} wakes up quickly and looks around... After a few moments of confusion, {} remembers that they have the most annoying neighbors living upstairs.", "Story".blue().bold(), user.name, user.name);
                     to_progress = true;
 
                 }
                 2 => {
-                    println!("{} lays in their lumpy, sagging bed for a few more moments before slowly getting up and getting dressed. \"I need to go to the store to get food today.\" {} mutters under their breath. The moldy cheese sitting on the table was probably not edible, and the mice had not even left crumbs to eat in the pantry. {} picks up the coins on table... [10 {} added to the inventory]", user.name, user.name, user.name, "coins".cyan());
+                    println!("[{}] {} lays in their lumpy, sagging bed for a few more moments before slowly getting up and getting dressed.", "Story".blue().bold(), user.name);
+                    to_progress = true;
+                }
+                3 => {
+                    println!("[{}]\"I need to go to the store to get food today.\"", user.name.blue().bold());
+                    to_progress = true;
+                }
+                4 => {
+                    println!("[{}] The moldy cheese sitting on the table was probably not edible, and the mice had not even left crumbs to eat in the pantry. {} picks up the coins on the table... [10 {} added to the inventory]", "Story".blue().bold(), user.name, "coins".cyan());
                     inventory_update("coins", 10);
                     to_progress = true;
                 }
