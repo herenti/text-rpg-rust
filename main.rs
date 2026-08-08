@@ -7,12 +7,21 @@ use std::process;
 use std::{thread, time};
 use enable_ansi_support;
 
+/*
+ * - INCOMPLETE.
+ * - dexterity to check for traps. mimics, door traps. fails or succeeds on chance.
+ * - speech for better prices.
+ * - set up location conditionals for events. advance user progress once that event is done. not until it is done.
+ * - location data for cities can have multiple districts instead of everything in one.
+ * - before location commands can be used the specific user flag must be lifted when an event needs to happen.
+*/
+
 fn save(user: &mut User) {
     let mut file = File::create("data.txt");
-    let inventory = user.inventory.join(",");
-    let event_flags = user.event_flags.join(",");
-    let user_flags = user.user_flags.join(",");
-    let info = format!("{}:{}:{}:{}:{}:{}:{}:{}:{}",user.name, inventory, user.level, user.location, event_flags, user.health, user.exp, user_flags, user.progress);
+    let inventory = user.inventory.retain(|&x| x.len() > 0).join(",");
+    let event_flags = user.event_flags.retain(|&x| x.len() > 0).join(",");
+    let user_flags = user.user_flags.retain(|&x| x.len() > 0).join(",");
+    let info = format!("{}:{}:{}:{}:{}:{}:{}:{}:{}:{}:{}:{}",user.name, inventory, user.level, user.location, event_flags, user.health, user.exp, user_flags, user.progress, user.speech, user.dex, user.strength);
     let info = info.as_bytes();
     file.expect("reason").write_all(info);
 }
@@ -41,6 +50,9 @@ fn load() -> User {
             exp: contents[6].parse().expect("failed to read user exp."),
             user_flags: user_flags,
             progress: contents[8].parse().expect("failed to read user progress."),
+            speech: contents[9],
+            dex: contents[10],
+            strength: contents[11],
         }
 }
 
@@ -69,7 +81,7 @@ fn commands(input: &str, flag: &str) {
     if flag == "gamestart" {
         match input {
             "new" => {
-                print!("\r\n[{}]: ", "Enter name".blue().bold());
+                print!("[{}]: ", "Enter name".blue().bold());
                 std::io::stdout().flush().unwrap();
                 let mut input = String::new();
                 io::stdin().read_line(&mut input).expect("Failed to read input.\r\n");
@@ -80,9 +92,25 @@ fn commands(input: &str, flag: &str) {
                 save(&mut user);
             }
             "load" => {
-                let mut user = load();
+                let file_check = File::open("data.txt");
+                if file_check.is_ok() {
+                    let mut user = load();
+                    clear;
+                    println!("Loading user {}... Press enter with no command to continue story content,", user.name);
+                } else {
+                    println!("No save game present. Please use the {} command.", "new".green());
+                    print!("[{}]: ", "Command".blue().bold());
+                    std::io::stdout().flush().unwrap();
+                    let mut input = String::new();
+                    io::stdin().read_line(&mut input).expect("Failed to read input.");
+                    let input = input.trim();
+                    commands(&input, "gamestart");
+                }
+            }
+            "quit" => {
                 clear;
-                println!("Loading user {}... Press enter with no command to continue story content,", user.name);
+                println!("Exiting the game...");
+                std::process::exit(1);
             }
             _ =>{
                 clear;
@@ -102,6 +130,11 @@ fn commands(input: &str, flag: &str) {
                 clear;
                 events();
             }
+            "quit" => {
+                clear;
+                println!("Exiting the game...");
+                std::process::exit(1);
+            }
             _ => {
                 clear;
                 println!("[{}] Incorrect command usage.", "ERROR".red().bold());
@@ -116,16 +149,14 @@ fn events() {
     let mut to_progress = false;
     for i in &user.event_flags {
         if i == "start" {
-            match user.progress {
+            match user.progress { //if user.location == for location conditionals?
                 0 => {
                     println!("[{}] BANG!!!", "Story".blue().bold());
                     to_progress = true;
-
                 }
                 1 => {
                     println!("[{}] {} wakes up quickly and looks around... After a few moments of confusion, {} remembers that they have the most annoying neighbors living upstairs.", "Story".blue().bold(), user.name, user.name);
                     to_progress = true;
-
                 }
                 2 => {
                     println!("[{}] {} lays in their lumpy, sagging bed for a few more moments before slowly getting up and getting dressed.", "Story".blue().bold(), user.name);
@@ -178,12 +209,10 @@ fn inventory_update(item: &str, _amount: i32) {
                 index += user.inventory.iter().position(|x| *&x == i).unwrap();
                 updated_amount += amount;
                 _name = name.to_string();
-
             }
         } else {
             op = false;
         }
-
     }
     if op == true {
         if updated_amount == 0 {
@@ -208,6 +237,9 @@ struct User {
     exp: i32,
     user_flags: Vec<String>,
     progress: i32,
+    speech: i32,
+    dex: i32,
+    strength: i32,
 }
 
 impl User {
@@ -222,6 +254,9 @@ impl User {
             exp: 0,
             user_flags: vec!["no_travel".to_string()],
             progress: 0,
+            speech: 1,
+            dex: 1,
+            strength: 1,
         }
     }
 }
