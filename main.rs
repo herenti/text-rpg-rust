@@ -18,9 +18,12 @@ use enable_ansi_support;
 
 fn save(user: &mut User) {
     let mut file = File::create("data.txt");
-    let inventory = user.inventory.retain(|&x| x.len() > 0).join(",");
-    let event_flags = user.event_flags.retain(|&x| x.len() > 0).join(",");
-    let user_flags = user.user_flags.retain(|&x| x.len() > 0).join(",");
+    user.inventory.retain(|x| !x.is_empty());
+    let inventory = user.inventory.join(",");
+    user.event_flags.retain(|x| !x.is_empty());
+    let event_flags = user.event_flags.join(",");
+    user.user_flags.retain(|x| !x.is_empty());
+    let user_flags = user.user_flags.join(",");
     let info = format!("{}:{}:{}:{}:{}:{}:{}:{}:{}:{}:{}:{}",user.name, inventory, user.level, user.location, event_flags, user.health, user.exp, user_flags, user.progress, user.speech, user.dex, user.strength);
     let info = info.as_bytes();
     file.expect("reason").write_all(info);
@@ -50,9 +53,9 @@ fn load() -> User {
             exp: contents[6].parse().expect("failed to read user exp."),
             user_flags: user_flags,
             progress: contents[8].parse().expect("failed to read user progress."),
-            speech: contents[9],
-            dex: contents[10],
-            strength: contents[11],
+            speech: contents[9].parse().expect("failed to read user speech."),
+            dex: contents[10].parse().expect("failed to read user dexs."),
+            strength: contents[11].parse().expect("failed to read user strength."),
         }
 }
 
@@ -237,9 +240,9 @@ struct User {
     exp: i32,
     user_flags: Vec<String>,
     progress: i32,
-    speech: i32,
-    dex: i32,
-    strength: i32,
+    speech: f32,
+    dex: f32,
+    strength: f32,
 }
 
 impl User {
@@ -252,11 +255,11 @@ impl User {
             event_flags: vec!["start".to_string()],
             health: 100,
             exp: 0,
-            user_flags: vec!["no_travel".to_string()],
+            user_flags: vec!["story_lock".to_string()],
             progress: 0,
-            speech: 1,
-            dex: 1,
-            strength: 1,
+            speech: 1.0,
+            dex: 1.0,
+            strength: 1.0,
         }
     }
 }
