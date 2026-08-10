@@ -230,6 +230,23 @@ fn inventory_update(item: &str, _amount: i32) {
     save(&mut user);
 }
 
+fn travel(place: &str) {
+    let mut user = load();
+    if "event_lock".to_string() in user.user_flags {
+
+    } else {
+        let locations = Locations::new();
+        let nearby = locations.library[user.location]["nearby".to_string()];
+        for i in locations {
+            if i in nearby{
+                if i[place.to_string()]["name".to_string()] == place {
+
+                }
+        }
+
+    }
+}
+
 struct User {
     name: String,
     inventory: Vec<String>,
@@ -251,11 +268,11 @@ impl User {
             name: username.to_string(),
             inventory: vec![],
             level: 1,
-            location: "home".to_string(),
+            location: "0000".to_string(),
             event_flags: vec!["start".to_string()],
             health: 100,
             exp: 0,
-            user_flags: vec!["story_lock".to_string()],
+            user_flags: vec!["story_lock".to_string(), "game_lock".to_string()],
             progress: 0,
             speech: 1.0,
             dex: 1.0,
@@ -289,5 +306,23 @@ impl Objects {
     }
 }
 
+struct Locations {
+    library: HashMap<String, HashMap<String, Vec<String>>,
+}
 
+impl Locations {
+    fn new() -> Locations {
+        let mut locations = Objects {
+            HashMap::new(),
+        };
 
+        let mut l0000 = HashMap::new();
+        l0000.insert("description".to_string(), vec!["A run down and kind of dirty single room apartment. There is a single Table in the center of the room with two chairs, a stove for cooking, and a few cupboards and countertops. There is not much else in this room besides a dresser for clothes and {} sitting on the table.".to_string()]);
+        l0000.insert("nearby".to_string(), vec!["0002".to_string()]);
+        l0000.insert("objects".to_string(), vec!["moldy cheese".to_string()]);
+        l0000.insert("id".to_string(), vec!["0000".to_string()]);
+        l0000.insert("name".to_string(), "home");
+        locations.library.insert("0000".to_string(), l0000);
+        locations
+    }
+}
