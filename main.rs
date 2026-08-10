@@ -80,6 +80,14 @@ fn main() {
 }
 
 fn commands(input: &str, flag: &str) {
+    let input = input.split(" ");
+    let input = input.collect::<Vec<&str>>();
+    let args = if input.len() > 1 {
+        &input[1..].join(" ")
+    } else {
+        ""
+    };
+    let input = input[0];
     let clear = std::process::Command::new("clear").status().unwrap();
     if flag == "gamestart" {
         match input {
@@ -132,6 +140,14 @@ fn commands(input: &str, flag: &str) {
             "" => {
                 clear;
                 events();
+            }
+            "travel" => {
+                if user.user_flags.contains(&"story_lock".to_string()) {
+                    println!("The {} command is not available right now.", "travel".green())
+
+                } else {
+                    travel(args);
+                }
             }
             "quit" => {
                 clear;
@@ -232,19 +248,21 @@ fn inventory_update(item: &str, _amount: i32) {
 
 fn travel(place: &str) {
     let mut user = load();
-    if "event_lock".to_string() in user.user_flags {
+    let locations = Locations::new();
+    let nearby = &locations.library[&user.location]["nearby"];
+    for (key, value) in &locations.library {
+        if nearby.contains(&key){
+            if &locations.library[key]["name"][0] == place {
+                println!("traveled to {}", place);
+                return;
+            } else {
 
-    } else {
-        let locations = Locations::new();
-        let nearby = locations.library[user.location]["nearby".to_string()];
-        for i in locations {
-            if i in nearby{
-                if i[place.to_string()]["name".to_string()] == place {
+            }
+        } else {
 
-                }
         }
-
     }
+    println!("That location is not available to {} to from here.", "travel".green());
 }
 
 struct User {
@@ -307,21 +325,20 @@ impl Objects {
 }
 
 struct Locations {
-    library: HashMap<String, HashMap<String, Vec<String>>,
+    library: HashMap<String, HashMap<String, Vec<String>>>,
 }
 
 impl Locations {
     fn new() -> Locations {
-        let mut locations = Objects {
-            HashMap::new(),
+        let mut locations = Locations {
+            library: HashMap::new(),
         };
 
         let mut l0000 = HashMap::new();
         l0000.insert("description".to_string(), vec!["A run down and kind of dirty single room apartment. There is a single Table in the center of the room with two chairs, a stove for cooking, and a few cupboards and countertops. There is not much else in this room besides a dresser for clothes and {} sitting on the table.".to_string()]);
         l0000.insert("nearby".to_string(), vec!["0002".to_string()]);
         l0000.insert("objects".to_string(), vec!["moldy cheese".to_string()]);
-        l0000.insert("id".to_string(), vec!["0000".to_string()]);
-        l0000.insert("name".to_string(), "home");
+        l0000.insert("name".to_string(), vec!["home".to_string()]);
         locations.library.insert("0000".to_string(), l0000);
         locations
     }
