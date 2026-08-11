@@ -99,7 +99,7 @@ fn commands(input: &str, flag: &str) {
                 let input = input.trim();
                 let mut user = User::new(&input);
                 clear;
-                println!("Welcome to the game {}! This game autosaves. Press enter with no command to continue story content.\r\n", input.cyan());
+                println!("Welcome to the game {}! This game autosaves. Press enter with no command to continue the story content if available.\r\n", input.cyan());
                 save(&mut user);
             }
             "load" => {
@@ -107,7 +107,7 @@ fn commands(input: &str, flag: &str) {
                 if file_check.is_ok() {
                     let mut user = load();
                     clear;
-                    println!("Loading user {}... Press enter with no command to continue story content,", user.name);
+                    println!("Loading user {}... Press enter with no command to continue story content if available,", user.name);
                 } else {
                     println!("No save game present. Please use the {} command.", "new".green());
                     print!("[{}]: ", "Command".blue().bold());
@@ -139,7 +139,7 @@ fn commands(input: &str, flag: &str) {
         match input {
             "" => {
                 clear;
-                events();
+                events(true);
             }
             "travel" => {
                 if user.user_flags.contains(&"story_lock".to_string()) {
@@ -147,6 +147,7 @@ fn commands(input: &str, flag: &str) {
 
                 } else {
                     travel(args);
+                    events(false);
                 }
             }
             "quit" => {
@@ -163,32 +164,86 @@ fn commands(input: &str, flag: &str) {
     }
 }
 
-fn events() {
+fn events(flag: bool) {
     let mut user = load();
     let mut to_progress = false;
+    let mut rsl = false;
+    let mut ssl = false;
     for i in &user.event_flags {
         if i == "start" {
             match user.progress { //if user.location == for location conditionals?
                 0 => {
-                    println!("[{}] BANG!!!", "Story".blue().bold());
+                    println!("[{}] BANG!!!! THUMP. THUMP.", "Story".blue().bold());
                     to_progress = true;
                 }
                 1 => {
-                    println!("[{}] {} wakes up quickly and looks around... After a few moments of confusion, {} remembers that they have the most annoying neighbors living upstairs.", "Story".blue().bold(), user.name, user.name);
+                    println!("[{}] {} groaned and opened her eyes, laying in a confused stupor.", "Story".blue().bold(), user.name);
                     to_progress = true;
                 }
                 2 => {
-                    println!("[{}] {} lays in their lumpy, sagging bed for a few more moments before slowly getting up and getting dressed.", "Story".blue().bold(), user.name);
+                    println!("[{}] -\"Must be the upstairs neighbors again...\"-", user.name.blue().bold());
                     to_progress = true;
                 }
                 3 => {
-                    println!("[{}]\"I need to go to the store to get food today.\"", user.name.blue().bold());
+                    println!("[{}] {} decided there was no use going back to sleep now. She wanted to give the landlord a peice of her mind, but knew it would be useless. Plus the rent was very cheap.", "story".blue().bold(), user.name);
                     to_progress = true;
                 }
                 4 => {
-                    println!("[{}] The moldy cheese sitting on the table was probably not edible, and the mice had not even left crumbs to eat in the pantry. {} picks up the coins on the table... [10 {} added to the inventory]", "Story".blue().bold(), user.name, "coins".cyan());
+                    println!("[{}] Getting up {} threw on the least filthy clothes she could find, and looked pitifully into the empty pantry. The mice had not even left a single crumb to eat, and the moldy cheese on the center table was certainly not edible.", "Story".blue().bold(), user.name);
+                    to_progress = true;
+                }
+                5 => {
+                    println!("[{}] It was time to get more food with the remaining money from the last pay day.", "Story".blue().bold());
+                    to_progress = true;
+                }
+                6 => {
+                    println!("[{}] {} grabbed the small purse off of the table. [20 {} added to the inventory]", "Story".blue().bold(), user.name, "coins".cyan());
                     inventory_update("coins", 10);
                     to_progress = true;
+                }
+                7 => {
+                    println!("[{}] Start by using the {} command to examine your area. This will show you people and things you can interact with using the {} command. It will also show you locations nearby that you can travel to from where you are using the {} command.", "Game".blue().bold(), "examine".green(), "interact".green(), "travel".green());
+                    rsl = true;
+                    to_progress = true;
+                }
+                8 => {
+                    if &user.location == "0002" {
+                        println!("[{}] Blinking blearily in the intense mid day sun, {} almost bumps into someone passing by in the street.", "Story".blue().bold(), user.name);
+                        ssl = true;
+                        to_progress = true;
+
+                    } else if flag{
+                        println!("[{}] -\"I need to go to the market for food...\"-", user.name.blue().bold());
+                        to_progress = false;
+                    }
+                }
+                9 =>{
+                    println!("[{}] Watch it!", "Strange man".blue().bold());
+                    to_progress = true;
+                }
+                10 =>{
+                    println!("[{}] Sorry!!! Sorry!", user.name.blue().bold());
+                    to_progress = true;
+                }
+                11 =>{
+                    println!("[{}] The man grunts and walks away with a slouch. He is a full two heads taller than {}, with a rather rotund drinking belly, a balding head, and the strong smell of spice.", "Story".blue().bold(), user.name);
+                    to_progress = true;
+                }
+                12 =>{
+                    println!("[{}] Spice is not an uncommon thing to smell in this part of the city. A mostly harmless substance but with addiction and withdrawals all the same. It can liven ones social skills and float you on a cloud for hours, but expect an irritable mood with a headache once it wears off...", user.name.blue().bold());
+                    to_progress = true;
+                    rsl = true;
+                }
+                13 => {
+                    if &user.location == "0003" {
+                        println!("[{}] walking through the market, {} barely has time to react as a small figure darts out from behind a stall, deftly cuts the string of her purse, and runs off with it. [20 {} removed from the inventory].", "Story".blue().bold(), user.name, "coins".cyan());
+                        ssl = true;
+                        to_progress = true;
+
+                    } else if flag{
+                        println!("[{}] -\"I need to go to the market for food...\"-", user.name.blue().bold());
+                        to_progress = false;
+                    }
                 }
                 _ => {
 
@@ -197,8 +252,19 @@ fn events() {
         }
     }
     let mut user = load();
-    if to_progress == true {
+    if to_progress {
         user.progress += 1;
+    } else {
+
+    }
+    if rsl{
+        let index = user.user_flags.iter().position(|x| *&x == "story_lock").unwrap();
+        user.user_flags.remove(index);
+    } else {
+
+    }
+    if ssl {
+        user.user_flags.push("story_lock".to_string());
     } else {
 
     }
@@ -253,7 +319,9 @@ fn travel(place: &str) {
     for (key, value) in &locations.library {
         if nearby.contains(&key){
             if &locations.library[key]["name"][0] == place {
-                println!("traveled to {}", place);
+                println!("[{}] Traveled to {}.", "game".blue().bold(), place);
+                user.location = key.to_string();
+                save(&mut user);
                 return;
             } else {
 
@@ -262,7 +330,7 @@ fn travel(place: &str) {
 
         }
     }
-    println!("That location is not available to {} to from here.", "travel".green());
+    println!("[{}] That location is not available to {} to from here.", "game".blue().bold(), "travel".green());
 }
 
 struct User {
@@ -336,10 +404,31 @@ impl Locations {
 
         let mut l0000 = HashMap::new();
         l0000.insert("description".to_string(), vec!["A run down and kind of dirty single room apartment. There is a single Table in the center of the room with two chairs, a stove for cooking, and a few cupboards and countertops. There is not much else in this room besides a dresser for clothes and {} sitting on the table.".to_string()]);
-        l0000.insert("nearby".to_string(), vec!["0002".to_string()]);
+        l0000.insert("nearby".to_string(), vec!["0001".to_string()]);
         l0000.insert("objects".to_string(), vec!["moldy cheese".to_string()]);
         l0000.insert("name".to_string(), vec!["home".to_string()]);
         locations.library.insert("0000".to_string(), l0000);
+
+        let mut l0001 = HashMap::new();
+        l0001.insert("description".to_string(), vec!["An old and derepit apartment building. Inside it can be navigated by a rather narrow hallway that is barely lit. People seemed to use the hallway as extra storage, even though there was no room for it.".to_string()]);
+        l0001.insert("nearby".to_string(), vec!["0000".to_string(), "0002".to_string()]);
+        l0001.insert("objects".to_string(), vec!["wooden box".to_string()]);
+        l0001.insert("name".to_string(), vec!["apartment building".to_string()]);
+        locations.library.insert("0001".to_string(), l0001);
+
+        let mut l0002 = HashMap::new();
+        l0002.insert("description".to_string(), vec!["One of the most poor districts in Anshanli; however it is still more safe than the pleasure district due to the volunteer work done by temple priests and nuns.".to_string()]);
+        l0002.insert("nearby".to_string(), vec!["0001".to_string(), "0003".to_string()]);
+        l0002.insert("objects".to_string(), vec![]);
+        l0002.insert("name".to_string(), vec!["dubari district".to_string()]);
+        locations.library.insert("0002".to_string(), l0002);
+
+        let mut l0003 = HashMap::new();
+        l0003.insert("description".to_string(), vec!["A bustling market filled with all sorts of people. The Dubari market in particular seemed to attract a colorful crowd, for better or worse. Among the delicious scents of food, one can catch a whiff of rotten fish, and something that reminds one of a dog's asshole.".to_string()]);
+        l0003.insert("nearby".to_string(), vec!["0002".to_string()]);
+        l0003.insert("objects".to_string(), vec!["food seller".to_string(), "apothecary".to_string(), "shady merchant".to_string()]);
+        l0003.insert("name".to_string(), vec!["dubari market".to_string()]);
+        locations.library.insert("0003".to_string(), l0003);
         locations
     }
 }
