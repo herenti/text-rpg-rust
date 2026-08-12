@@ -1,0 +1,23 @@
+0#start#Story#BANG!!!! THUMP. THUMP.
+1#start#Story#username groaned and opened her eyes, laying in a confused stupor.
+2#start#username#-"Must be the upstairs neighbors again..."-
+3#start#Story#username decided there was no use going back to sleep now. She wanted to give the landlord a peice of her mind, but knew it would be useless. Plus the rent was very cheap.
+4#start#Story#Getting up username threw on the least filthy clothes she could find, and looked pitifully into the empty pantry. The mice had not even left a single crumb to eat, and the moldy cheese on the center table was certainly not edible.
+5#start#Story#It was time to get more food with the remaining money from the last pay day.
+6#start#Story#username grabbed the small purse off of the table. [20 coins added to the inventory]
+7#start#Game#Start by using the examine command to examine your area. This will show you people and things you can interact with using the interact command. It will also show you locations nearby that you can travel to from where you are using the travel command. Example usage "interact name of person here", "travel location a".
+8#start#Story#Blinking blearily in the intense mid day sun, username almost bumps into someone passing by in the street.
+9#start#Strange man#"Watch it!"
+10#start#username#"Sorry!!! Sorry!"
+11#start#Story#The man grunts and walks away with a slouch. He is a full two heads taller than username, with a rather rotund drinking belly, a balding head, and the strong smell of spice.
+12#start#Story#Spice is not an uncommon thing to smell in this part of the city. A mostly harmless substance but with addiction and withdrawals all the same. It can liven ones social skills and float you on a cloud for hours, but expect an irritable mood with a headache once it wears off...
+13#start#Story#walking through the market, username barely has time to react as a small figure darts out from behind a stall, deftly cuts the string of her purse, and runs off with it. [20 coins removed from the inventory].
+14#start#username#"Stop!! Thief!!!!!"
+15#start#Story#But the figure is already gone, weaving their way through the crowd. Some people look around at username, but nobody saw it actually happen, and nobody really seems to care.
+16#start#username#-"That was my only money for at least a week, and no way is my boss going to pay me early."-
+17#start#username#-"I would cut off that thief's hands myself if i could... What am i going to do?"-
+18#start#Story#username stands in the middle of the street completely hopeless for a few moments before catching a fragment of conversation:
+19#start#Woman#"... Heard the guild has been making good money lately with it's job offers. Some trouble in the area with monsters ..."
+20#start#username#-"Thats right, the guild. I am going to starve if I don't get any money by tomorrow... Doing a guild job might be the only way to do it, but it could also get me killed..."-
+21#start#username#-"I really dont have any other choice. Maybe i can find one that won't be too difficult?"-
+22#start#username#-"I need to go to Central Anshanli and then straight to the guild."-
