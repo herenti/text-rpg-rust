@@ -1,2 +1,2 @@
 # text-rpg-rust
-text rpg game in rust
+text rpg game in rust. incomplete
