@@ -9,13 +9,15 @@ use enable_ansi_support;
 
 /*
  * - INCOMPLETE.
+ * - Tested to work only on linux.
  * - TODO:
  * - dexterity to check for traps. mimics, door traps. fails or succeeds on chance.
  * - speech for better prices.
  * - split sections into modules.
  * - add interact and examine commands.
  * - add npc struct.
- * - make inventory dict instead of vec?
+ * - make inventory hashmap instead of vec?
+ * - later add battle events and commands.
 */
 
 fn save(user: &mut User) {
@@ -180,7 +182,12 @@ fn events(flag: bool) {
     let mut ssl = false;
     for i in &user.event_flags {
         if i == "start" {
-            match user.progress { //if user.location == for location conditionals?
+            match user.progress {
+                /*
+                0 => {
+                    println!("[{}] ", "Story".blue().bold());
+                }
+                */
                 0 => {
                     println!("[{}] BANG!!!! THUMP. THUMP.", "Story".blue().bold());
                 }
@@ -294,7 +301,7 @@ fn events(flag: bool) {
     save(&mut user);
 }
 
-fn inventory_update(item: &str, _amount: i32) {
+fn inventory_update(item: &str, _amount: i32) { //having inventory as hashmap would fix this mess?
     let mut user = load();
     let mut updated_amount = 0;
     let mut index = 0;
@@ -440,7 +447,7 @@ impl Locations {
             library: HashMap::new(),
         };
         let _list = vec![
-            //vec!["id", "name", "description", "nearby", "objects"],
+            //vec!["id", "name", "description", "nearby", "items", "npc"],
             vec!["0000", "home", "A run down and kind of dirty single room apartment. There is a single Table in the center of the room with two chairs, a stove for cooking, and a few cupboards and countertops. There is not much else in this room besides a dresser for clothes and moldy cheese sitting on the table.", "0001", "modly cheese", ""],
             vec!["0001", "apartment building", "An old and derepit apartment building. Inside it can be navigated by a rather narrow hallway that is barely lit. People seemed to use the hallway as extra storage, even though there was no room for it.", "0000;0002", "wood crate", ""],
             vec!["0002", "dubari district", "One of the most poor districts in Anshanli; however it is still more safe than the pleasure district due to the volunteer work done by temple priests and nuns.", "0001;0003;0004", "", "dice player;suspicious stranger"],
