@@ -15,6 +15,7 @@ use enable_ansi_support;
  * - split sections into modules.
  * - add interact and examine commands.
  * - add npc struct.
+ * - make inventory dict instead of vec?
 */
 
 fn save(user: &mut User) {
@@ -200,7 +201,7 @@ fn events(flag: bool) {
                 }
                 6 => {
                     println!("[{}] {} grabbed the small purse off of the table. [20 {} added to the inventory]", "Story".blue().bold(), user.name, "coins".cyan());
-                    inventory_update("coins", 10);
+                    inventory_update("coins", 20);
                 }
                 7 => {
                     println!("[{}] Start by using the {} command to examine your area. This will show you people and things you can interact with using the {} command. It will also show you locations nearby that you can travel to from where you are using the {} command.", "Game".blue().bold(), "examine".green(), "interact".green(), "travel".green());
@@ -233,6 +234,7 @@ fn events(flag: bool) {
                 13 => {
                     if &user.location == "0003" {
                         println!("[{}] walking through the market, {} barely has time to react as a small figure darts out from behind a stall, deftly cuts the string of her purse, and runs off with it. [20 {} removed from the inventory].", "Story".blue().bold(), user.name, "coins".cyan());
+                        inventory_update("coins", -20);
                         ssl = true;
                     } else if flag{
                         println!("[{}] -\"I need to go to the market for food...\"-", user.name.blue().bold());
