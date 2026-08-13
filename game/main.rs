@@ -130,7 +130,7 @@ fn commands(input: &str, flag: &str) {
                 if file_check.is_ok() {
                     let mut user = load();
                     clear;
-                    println!("Loading user {}... Press enter with no command to continue story content if available,", user.name);
+                    println!("Loading user {}... Press enter with no command to continue story content if available. Use the {} command if you forgot any commands.", user.name, "help".green());
                 } else {
                     println!("No save game present. Please use the {} command.", "new".green());
                     print!("[{}]: ", "Command".blue().bold());
@@ -182,6 +182,20 @@ fn commands(input: &str, flag: &str) {
                     }
                 }
             }
+            "examine" => {
+                if user.user_flags.contains(&"story_lock".to_string()) {
+                    println!("[{}] The {} command is not available right now.", "Game".blue().bold(), "examine".green())
+                } else {
+                    println!("{}", examine(&user.location));
+                }
+            }
+            "interact" => {
+                if user.user_flags.contains(&"story_lock".to_string()) {
+                    println!("[{}] The {} command is not available right now.", "Game".blue().bold(), "interact".green())
+                } else {
+                    interact(args);
+                }
+            }
             "quit" => {
                 clear;
                 println!("Exiting the game...");
@@ -200,6 +214,7 @@ fn events(flag: bool) {
     let mut to_progress = true;
     let mut rsl = false;
     let mut ssl = false;
+    let mut set_flag = "".to_string();
     if user.event_flags.contains(&"start".to_string()) {
         if user.progress == 6 {
             inventory_update("coins", 20);
@@ -226,7 +241,32 @@ fn events(flag: bool) {
             } else{
                 to_progress = false;
             }
-        } else if user.progress == 22 {
+        } else if user.progress == 22{
+            rsl = true;
+        } else if user.progress == 23 {
+            if &user.location == "0005" {
+                ssl = true;
+            } else if flag{
+                println!("[{}] -\"I need to go to the guild in Central Anshanli...\"-", user.name.blue().bold());
+                to_progress = false;
+            } else{
+                to_progress = false;
+            }
+        } else if user.progress == 26{
+            rsl = true;
+            set_flag = "dialogue-guildclerk".to_string();
+        } else if user.progress == 27 {
+            if &user.location == "0005" && !user.event_flags.contains(&"dialogue-guildclerk".to_string()) {
+                ssl = true;
+            } else if flag{
+                println!("[{}] -\"I should talk to the clerk first.\"-", user.name.blue().bold());
+                to_progress = false;
+            } else{
+                to_progress = false;
+            }
+        } else if user.progress == 36 {
+            inventory_update("guild icon", 1);
+        } else if user.progress == 39 {
             rsl = true;
         } else{
 
@@ -234,13 +274,19 @@ fn events(flag: bool) {
         let library = load_story();
         if to_progress {
             for i in library {
-                if user.progress == i[0].parse().unwrap() {
-                    println!("[{}] {}", i[2].blue().bold(), i[3])
+                if user.progress == i[0].parse().unwrap() && &i[1] == "start" {
+                    println!("[{}] {}", i[2].blue().bold(), i[3]);
+                    break;
                 }
             }
         }
     }
     let mut user = load();
+    if set_flag.len() > 0 {
+        user.event_flags.push(set_flag);
+    } else {
+
+    }
     if to_progress {
         user.progress += 1;
     } else {
@@ -335,6 +381,43 @@ fn travel_check(id: &str) -> bool {
     return true;
 }
 
+fn examine(location: &str) -> String {
+    let library = Locations::new().library;
+    let info = &library[location];
+    let nearby = &info["nearby"];
+    let mut _vec = vec![];
+    for i in nearby {
+        _vec.push(library[i]["name"][0].as_str())
+    }
+    format!("[{}]: {}\r\n[{}]: {}\r\n[{}]: {}\r\n[{}]: {}\r\n[{}]: {}\r\n", "Name".blue().bold(), info["name"][0], "Description".blue().bold(), info["description"][0], "Items".blue().bold(), info["items"].join(", "), "Characters".blue().bold(), info["npc"].join(", "), "Locations nearby".blue().bold(), _vec.join(", "))
+}
+
+fn interact(object: &str) {
+    let mut user = load();
+    let library = Locations::new().library;
+    if library[&user.location]["npc"].contains(&object.to_string()) {
+            match object {
+                "guild clerk" => {
+                    if user.event_flags.contains(&"dialogue-guildclerk".to_string()) {
+                        if user.progress == 27 {
+                            let index = user.event_flags.iter().position(|x| *&x == "dialogue-guildclerk").unwrap();
+                            user.event_flags.remove(index);
+                            save(&mut user);
+                            events(true);
+                        } else {
+
+                        }
+                    } else {
+
+                    }
+                }
+                _ => {
+
+                }
+            }
+    }
+}
+
 struct User {
     name: String,
     inventory: Vec<String>,
@@ -409,7 +492,7 @@ impl Locations {
             vec!["0002", "dubari district", "One of the most poor districts in Anshanli; however it is still more safe than the pleasure district due to the volunteer work done by temple priests and nuns.", "0001;0003;0004", "", "dice player;suspicious stranger"],
             vec!["0003", "dubari market", "A bustling market filled with all sorts of people. The Dubari market in particular seemes to attract a colorful crowd; for better or worse. Among the delicious scents of food, one can catch a whiff of rotten fish, and something that reminds one of a dead dog's asshole.", "0002", "", "food seller;apothecary;shady merchant"],
             vec!["0004", "central anshanli", "The clean and prosperous center of the city. Home to many of the cities buisnesses and it's ornate temple to the Divine Mora. Patrolled often by the city guard, this is not a place where the wealthy feel unsafe.", "0002;0005;0006", "", ""],
-            vec!["0005", "anshanli guild", "A large, upscale multi-story building. The spacious room inside the imposing front doors also functions as a tavern. Often a lively place, filled with a tough looking crowd. A board hosting jobs for the guild members sits on the far wall.", "0004", "", "barkeep;job board;guild official"],
+            vec!["0005", "anshanli guild", "A large, upscale multi-story building. The spacious room inside the imposing front doors also functions as a tavern. Often a lively place, filled with a mixture of a tough looking and somewhat wealthy crowd. A board hosting jobs for the guild members sits on the far wall.", "0004", "", "barkeep;job board;guild clerk"],
             vec!["0006", "temple of mora", "Just as impressive on the inside as the outside. Ornate carvings cover the outisde of the building. Some are beautiful and conforting, while others show scenes of distruction and chaos. On the candle-lit inside, a vaulted ceiling is painted with intricate patterns. A few priests and nuns can be seen doing various duities.", "0004", "shrine", "head priest;head nun"],
         ];
         for i in _list {
