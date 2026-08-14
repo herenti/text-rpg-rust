@@ -1,40 +1,39 @@
-0#start#Story#BANG!!!! THUMP. THUMP.
-1#start#Story#username groaned and opened her eyes, laying in a confused stupor.
-2#start#username#-"Must be the upstairs neighbors again..."-
-3#start#Story#username decided there was no use going back to sleep now. She wanted to give the landlord a peice of her mind, but knew it would be useless. Plus the rent was very cheap.
-4#start#Story#Getting up, username threw on the least filthy clothes she could find, and looked pitifully into the empty pantry. The mice had not even left a single crumb to eat, and the moldy cheese on the center table was certainly not edible.
-5#start#Story#It was time to get more food with the remaining money from the last pay day.
-6#start#Story#username grabbed the small purse off of the table. [20 coins added to the inventory]
-7#start#Game#Start by using the examine command to examine your area. This will show you people and things you can interact with using the interact command. It will also show you locations nearby that you can travel to from where you are using the travel command. Example usage "interact name of person here", "travel location a".
-8#start#Story#Blinking blearily in the intense mid day sun, username almost bumps into someone passing by in the street.
-9#start#Strange man#"Watch it!"
-10#start#username#"Sorry!!! Sorry!"
-11#start#Story#The man grunts and walks away with a slouch. He is a full two heads taller than username, with a rather rotund drinking belly, a balding head, and the strong smell of spice.
-12#start#Story#Spice is not an uncommon thing to smell in this part of the city. A mostly harmless substance but with addiction and withdrawals all the same. It can liven ones social skills and float you on a cloud for hours, but expect an irritable mood with a headache once it wears off...
-13#start#Story#walking through the market, username barely has time to react as a small figure darts out from behind a stall, deftly cuts the string of her purse, and runs off with it. [20 coins removed from the inventory].
-14#start#username#"Stop!! Thief!!!!!"
-15#start#Story#But the figure is already gone, weaving their way through the crowd. Some people look around at username, but nobody saw it actually happen, and nobody really seems to care.
-16#start#username#-"That was my only money for at least a week, and no way is my boss going to pay me early."-
-17#start#username#-"I would cut off that thief's hands myself if i could... What am i going to do?"-
-18#start#Story#username stands in the middle of the street completely hopeless for a few moments before catching a fragment of conversation:
-19#start#Woman#"... Heard the Guild has been making good money lately with it's job offers. Some trouble in the area with monsters ..."
-20#start#username#-"Thats right, the Guild. I am going to starve if I don't get any money by tomorrow... Doing a guild job might be the only way to do it, but it could also get me killed..."-
-21#start#username#-"I really dont have any other choice. Maybe i can find one that won't be too difficult?"-
-22#start#username#-"I need to go to Central Anshanli and then straight to the Guild."-
-23#start#Story#The Guild was not the sort of place that username would ever normally go to. The money for doing Guild jobs was good, but you had to be willing to put your life on the line. Still, if you were willing, it was the best way to get money fast.
-24#start#Story#Stepping through the large wooden doors, username felt out of place among the sparse crowd that was inside today. They were either well dressed or professionally equipped, and compared to username's ragged appearance, there could not have been a sharper contrast.
-25#start#username#-"I should talk to the clerk first."-
-26#start#Game#Reminder: checking the area with the examine command can show you characters and objects to interact with using the interact command.
-27#start#Guild clerk#"Hello!! welcome. What can I help you with today?"
-28#start#username#"I um... need to find a quick job. Something easy. I have never done work with the Guild here before so I don't know how that works."
-29#start#Guild clerk#"It is pretty easy; you just fill out this form and submit it, and we will send mail out to all of our other locations with the names of new registrees. Once that processing time takes place you will be good at every location. You will also be given a token with your name carved into it for identification. Jobs can only be taken within your rank. You will be starting as rank F."
-30#start#Guild clerk#"Also, the Guild is not responsible for injury or loss of life that happens with any work associated with us."
-31#start#username#"Alright then... give me a moment."
-32#start#Story#.....
-33#start#username#"Alright, here it is."
-34#start#Guild clerk#"Congratulations! Let us make your token and then you can get any job on the board. Remember, your life is your responsibility."
-35#start#Story#.....
-36#start#Guild clerk#"Here you go, and have a nice day." [Guild icon added to the inventory]
-37#start#username#-"They really don't seem to care about my safety, do they. I shoudn't be surprised; this is the Guild after all..."-
-38#start#username#-"I should check the job board in here for a job."-
-39#start#Game#Guild rank is based on player level. Jobs are ranked from F to S. + ranked jobs are always more difficult within each rank.
+start#Story#BANG!!!! THUMP. THUMP.
+start#Story#username groaned and opened her eyes, laying in a confused stupor.
+start#username#-"Must be the upstairs neighbors again..."-
+start#Story#username decided there was no use going back to sleep now. She wanted to give the landlord a peice of her mind, but knew it would be useless. Plus the rent was very cheap.
+start#Story#Getting up, username threw on the least filthy clothes she could find, and looked pitifully into the empty pantry. The mice had not even left a single crumb to eat, and the moldy cheese on the center table was certainly not edible.
+start#Story#It was time to get more food with the remaining money from the last pay day.
+start#Story#username grabbed the small purse off of the table. [20 coins added to the inventory]
+start#Game#Start by using the examine command to examine your area. This will show you people and things you can interact with using the interact command. It will also show you locations nearby that you can travel to from where you are using the travel command. Example usage "interact name of person here", "travel location a".
+start#Story#Blinking blearily in the intense mid day sun, username almost bumps into someone passing by in the street.
+start#Strange man#"Watch it!"
+start#username#"Sorry!!! Sorry!"
+start#Story#The man grunts and walks away with a slouch. He is a full two heads taller than username, with a rather rotund drinking belly, a balding head, and the strong smell of the drug taabi.
+start#Story#walking through the market, username barely has time to react as a small figure darts out from behind a stall, deftly cuts the string of her purse, and runs off with it. [20 coins removed from the inventory].
+start#username#"Stop!! Thief!!!!!"
+start#Story#But the figure is already gone, weaving their way through the crowd. Some people look around at username, but nobody saw it actually happen, and nobody really seems to care.
+start#username#-"That was my only money for at least a week, and no way is my boss going to pay me early."-
+start#username#-"I would cut off that thief's hands myself if i could... What am i going to do?"-
+start#Story#username stands in the middle of the street completely hopeless for a few moments before catching a fragment of conversation:
+start#Woman#"... Heard the Guild has been making good money lately with it's job offers. Some trouble in the area with monsters ..."
+start#username#-"Thats right, the Guild. I am going to starve if I don't get any money by tomorrow... Doing a guild job might be the only way to do it, but it could also get me killed..."-
+start#username#-"I really dont have any other choice. Maybe i can find one that won't be too difficult?"-
+start#username#-"I need to go to Central Anshanli and then straight to the Guild."-
+start#Story#The Guild was not the sort of place that username would ever normally go to. The money for doing Guild jobs was good, but you had to be willing to put your life on the line. Still, if you were willing, it was the best way to get money fast.
+start#Story#Stepping through the large wooden doors, username felt out of place among the sparse crowd that was inside today. They were either well dressed or professionally equipped, and compared to username's ragged appearance, there could not have been a sharper contrast.
+start#username#-"I should talk to the clerk first."-
+start#Game#Reminder: checking the area with the examine command can show you characters and objects to interact with using the interact command.
+start#Guild clerk#"Hello!! welcome. What can I help you with today?"
+start#username#"I um... need to find a quick job. Something easy. I have never done work with the Guild here before so I don't know how that works."
+start#Guild clerk#"It is pretty easy; you just fill out this form and submit it, and we will send mail out to all of our other locations with the names of new registrees. Once that processing time takes place you will be good at every location. You will also be given a token with your name carved into it for identification. Jobs can only be taken within your rank. You will be starting as rank F."
+start#Guild clerk#"Also, the Guild is not responsible for injury or loss of life that happens with any work associated with us."
+start#username#"Alright then... give me a moment."
+start#Story#.....
+start#username#"Alright, here it is."
+start#Guild clerk#"Congratulations! Let us make your token and then you can get any job on the board. Remember, your life is your responsibility."
+start#Story#.....
+start#Guild clerk#"Here you go, and have a nice day." [Guild icon added to the inventory]
+start#username#-"They really don't seem to care about my safety, do they. I shoudn't be surprised; this is the Guild after all..."-
+start#username#-"I should check the job board in here for a job."-
+start#Game#Guild rank is based on player level. Jobs are ranked from F to S. + ranked jobs are always more difficult within each rank.

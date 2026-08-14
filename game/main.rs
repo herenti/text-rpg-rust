@@ -14,8 +14,6 @@ use enable_ansi_support;
  * - dexterity to check for traps. mimics, door traps. fails or succeeds on chance.
  * - speech for better prices.
  * - split sections into modules.
- * - add interact and examine commands.
- * - add npc struct.
  * - make inventory hashmap instead of vec?
  * - later add battle events and commands.
 */
@@ -33,23 +31,26 @@ fn save(user: &mut User) {
     file.expect("reason").write_all(info);
 }
 
-fn load_story() -> Vec<Vec<String>> {
+fn load_story() -> HashMap<i32, Vec<String>> {
+    let mut library = HashMap::new();
     let file_check = File::open("story");
     if file_check.is_ok() {
         let contents = std::fs::read_to_string("story");
         let contents = contents.expect("");
         let contents = contents.lines();
         let contents: Vec<String> = contents.map(|x| x.to_string()).collect();
-        let mut library = vec![];
+        let mut num = 0;
         for i in contents {
             let _contents = i.trim().split("#");
             let _contents: Vec<String> = _contents.map(|x| x.to_string()).collect();
-            library.push(_contents)
+            library.insert(num, _contents);
+            num += 1;
         }
         library
     } else {
         println!("ERROR: story file not found.");
-        vec![]
+        library.insert(0, vec![]);
+        library
     }
 }
 
@@ -229,9 +230,9 @@ fn events(flag: bool) {
             } else{
                 to_progress = false;
             }
-        } else if user.progress == 12{
+        } else if user.progress == 11{
             rsl = true;
-        } else if user.progress == 13{
+        } else if user.progress == 12{
             if &user.location == "0003" {
                 inventory_update("coins", -20);
                 ssl = true;
@@ -241,9 +242,9 @@ fn events(flag: bool) {
             } else{
                 to_progress = false;
             }
-        } else if user.progress == 22{
+        } else if user.progress == 21{
             rsl = true;
-        } else if user.progress == 23 {
+        } else if user.progress == 22 {
             if &user.location == "0005" {
                 ssl = true;
             } else if flag{
@@ -252,10 +253,10 @@ fn events(flag: bool) {
             } else{
                 to_progress = false;
             }
-        } else if user.progress == 26{
+        } else if user.progress == 25{
             rsl = true;
             set_flag = "dialogue-guildclerk".to_string();
-        } else if user.progress == 27 {
+        } else if user.progress == 26 {
             if &user.location == "0005" && !user.event_flags.contains(&"dialogue-guildclerk".to_string()) {
                 ssl = true;
             } else if flag{
@@ -264,21 +265,16 @@ fn events(flag: bool) {
             } else{
                 to_progress = false;
             }
-        } else if user.progress == 36 {
+        } else if user.progress == 35 {
             inventory_update("guild icon", 1);
-        } else if user.progress == 39 {
+        } else if user.progress == 38 {
             rsl = true;
         } else{
 
         }
         let library = load_story();
         if to_progress {
-            for i in library {
-                if user.progress == i[0].parse().unwrap() && &i[1] == "start" {
-                    println!("[{}] {}", i[2].blue().bold(), i[3]);
-                    break;
-                }
-            }
+            println!("[{}] {}", library[&user.progress][1].blue().bold(), library[&user.progress][2]);
         }
     }
     let mut user = load();
@@ -370,7 +366,7 @@ fn travel_check(id: &str) -> bool {
     let user = load();
     if user.event_flags.contains(&"start".to_string()) {
         if id == "0004" {
-            if user.progress < 22 {
+            if user.progress < 21 {
                 return false;
             } else {
             }
@@ -399,7 +395,7 @@ fn interact(object: &str) {
             match object {
                 "guild clerk" => {
                     if user.event_flags.contains(&"dialogue-guildclerk".to_string()) {
-                        if user.progress == 27 {
+                        if user.progress == 26 {
                             let index = user.event_flags.iter().position(|x| *&x == "dialogue-guildclerk").unwrap();
                             user.event_flags.remove(index);
                             save(&mut user);
